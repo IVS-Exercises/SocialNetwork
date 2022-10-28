@@ -16,8 +16,8 @@ class Profiles(models.Model):
     NickName= models.CharField(max_length=100);
     description= models.CharField(max_length=1000);
     AvatarImage= models.ImageField(upload_to="avatar",default='default-avatar-profile.jpg');
-    Followers= models.IntegerField();
-    Followeing = models.IntegerField();
+    Followers= models.IntegerField(default=0);
+    Followeing = models.IntegerField(default=0);
     user= models.OneToOneField(
         User,
         related_name='Frofiles', 
