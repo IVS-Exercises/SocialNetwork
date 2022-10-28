@@ -10,8 +10,8 @@ import profile
 from pyexpat import model
 from time import time
 from django.db import models
-
 from django.contrib.auth.models import User
+
 class Profiles(models.Model):
     NickName= models.CharField(max_length=100);
     description= models.CharField(max_length=1000);
