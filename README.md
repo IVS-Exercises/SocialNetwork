@@ -17,4 +17,4 @@
 ### để biết thêm chi tiết tham khảo ở : https://python-poetry.org/docs/basic-usage/
 
 ### ngoài ra để gỡ cài đặt poetry ra khỏi máy thì ta mở Powershell và chạy 
-###'(Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | py - --uninstall'
+### '(Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | py - --uninstall'
