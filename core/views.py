@@ -33,7 +33,8 @@ def signup(request):
                 user.save()
                 ## setting account after create user and profile
                 user_login=auth.authenticate(username=userName, password=passWord)
-                auth.user(request,user_login)
+                auth.login(request,user_login)
+                redirect('setting')
 
                 ## create profile for the user
                 user_model =  User.objects.get(username=userName)
