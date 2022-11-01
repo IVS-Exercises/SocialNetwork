@@ -61,5 +61,8 @@ def signin(request):
             messages.info(request, 'user or passworld not found')
             return redirect('signin')
     return render(request, 'signin.html')
+def logout(request):
+    auth.logout(request)
+    return redirect('signin')
 def setting(request):
     return render(request,'setting.html')
