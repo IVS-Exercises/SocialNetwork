@@ -1,7 +1,9 @@
+from asyncio.windows_events import NULL
 from cProfile import Profile
 from decimal import InvalidOperation
 from email import message
 from django.contrib.auth.models import User, auth
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.db import models
@@ -9,7 +11,7 @@ from django.http import HttpResponse
 
 from core.models import Profiles
 
-
+@login_required(login_url='signin')
 def index(request):
     return render(request, 'index.html')
 
@@ -61,5 +63,28 @@ def signin(request):
             messages.info(request, 'user or passworld not found')
             return redirect('signin')
     return render(request, 'signin.html')
+
+def logout(request):
+    auth.logout(request)
+    return redirect('signin')
+
+@login_required(login_url='signin')
 def setting(request):
-    return render(request,'setting.html')
+    user_profile = Profiles.objects.get(user=request.user)
+    if request.method == 'POST':
+        if request.FILES.get('image') == None:
+            image = user_profile.AvatarImage
+            bio = user_profile.description
+
+            user_profile.AvatarImage = image
+            user_profile.description = bio
+            user_profile.save()
+        if request.FILES.get('image') != None:
+            image = request.FILES.get('image')
+            bio = request.POST['Bio']
+
+            user_profile.AvatarImage = image
+            user_profile.description = bio
+            user_profile.save()
+        redirect('setting')
+    return render(request,'setting.html',{'user_profile':user_profile})
