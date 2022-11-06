@@ -36,6 +36,7 @@ class Posts(models.Model):
     Content =  models.TextField(blank=False)
     image =models.ImageField(upload_to="postImg")
     user = models.ForeignKey(User, related_name='posts',on_delete=models.CASCADE)
+    no_of_likes= models.IntegerField(default=0)
     def __str__(self):
         return self.user.username
 

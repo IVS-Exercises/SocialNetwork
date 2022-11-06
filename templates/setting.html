@@ -36,17 +36,17 @@
                     <p></p>
                 </div>
                 <div class="bg-white rounded-md lg:shadow-lg shadow col-span-2">
-                    <from acction="" method="POST" enctype="mutipart/from-data">
-                        {% csrf_token %}
+                    <form acction="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %} {{ form.as_p }}
                         <div class="grid grid-cols-2 gap-3 lg:p-6 p-4">
                             <div class="col-span-2">
                                 <label for="about">Bio</label>  
-                                <textarea id="about" name="Bio" rows="3"  class="shadow-none bg-gray-100" >{{user_profile.description}}</textarea>
+                                <textarea id="about" name="description" rows="3"  class="shadow-none bg-gray-100" >{{user_profile.description}}</textarea>
                             </div> 
                             <div class="col-span-2">
                                 <label for="">avatar</label>
                                 <img width="100" height="100" src="{{user_profile.AvatarImage.url}}" />
-                                <input type="File" name="image" value="" placeholder="" class="shadow-none bg-gray-100">
+                                <input type="file" name="image" value="" placeholder="" class="shadow-none bg-gray-100">
                             </div>
                         </div> 
     
@@ -54,7 +54,7 @@
                             <button class="p-2 px-4 rounded bg-gray-50 text-red-500"><a href="/"> Cancel </button>
                             <button type="submit" class="button bg-blue-700"> Save </button>
                         </div>
-                    </from>
+                    </form>
                 </div>
                 </div>
                 <br>

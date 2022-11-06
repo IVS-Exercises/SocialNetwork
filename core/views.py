@@ -6,8 +6,10 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
+from itertools import chain
 from django.db import models
 from django.http import HttpResponse
+import os
 
 from core.models import Profiles
 
@@ -70,21 +72,28 @@ def logout(request):
 
 @login_required(login_url='signin')
 def setting(request):
+    print("into setting")
     user_profile = Profiles.objects.get(user=request.user)
+    print("check method : "+request.method)
     if request.method == 'POST':
+        print("method is POST")
         if request.FILES.get('image') == None:
+            print("image is empty")
             image = user_profile.AvatarImage
-            bio = user_profile.description
+            description = request.POST['description']
+            print("description : "+  description)
 
             user_profile.AvatarImage = image
-            user_profile.description = bio
+            user_profile.description = description
             user_profile.save()
         if request.FILES.get('image') != None:
+            print("image is exists")
             image = request.FILES.get('image')
-            bio = request.POST['Bio']
+            description = request.POST['description']
 
             user_profile.AvatarImage = image
-            user_profile.description = bio
+            user_profile.description = description
+
             user_profile.save()
         redirect('setting')
     return render(request,'setting.html',{'user_profile':user_profile})
