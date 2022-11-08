@@ -17,7 +17,9 @@ from core.models import Posts, Profiles
 def index(request):
     user_object= User.objects.get(username=request.user.username)
     user_profile = Profiles.objects.get(user=user_object)
-    return render(request,'index.html',{'user_profile':user_profile})
+
+    posts =Posts.objects.all()
+    return render(request,'index.html',{'user_profile':user_profile ,'posts':posts})
 
 
 def signup(request):
