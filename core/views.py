@@ -1,17 +1,23 @@
+from asyncio.windows_events import NULL
 from cProfile import Profile
 from decimal import InvalidOperation
 from email import message
-from django.contrib.auth.models import User, auth
+from django.contrib.auth.models import User, auth 
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
+from itertools import chain
 from django.db import models
 from django.http import HttpResponse
+import os
 
-from core.models import Profiles
+from core.models import Posts, Profiles
 
-
+@login_required(login_url='signin')
 def index(request):
-    return render(request, 'index.html')
+    user_object= User.objects.get(username=request.user.username)
+    user_profile = Profiles.objects.get(user=user_object)
+    return render(request,'index.html',{'user_profile':user_profile})
 
 
 def signup(request):
@@ -61,8 +67,48 @@ def signin(request):
             messages.info(request, 'user or passworld not found')
             return redirect('signin')
     return render(request, 'signin.html')
+
 def logout(request):
     auth.logout(request)
     return redirect('signin')
+
+@login_required(login_url='signin')
 def setting(request):
-    return render(request,'setting.html')
+    print("into setting")
+    user_profile = Profiles.objects.get(user=request.user)
+    print("check method : "+request.method)
+    if request.method == 'POST':
+        print("method is POST")
+        if request.FILES.get('image') == None:
+            print("image is empty")
+            image = user_profile.AvatarImage
+            description = request.POST['description']
+            print("description : "+  description)
+
+            user_profile.AvatarImage = image
+            user_profile.description = description
+            user_profile.save()
+        if request.FILES.get('image') != None:
+            print("image is exists")
+            image = request.FILES.get('image')
+            description = request.POST['description']
+
+            user_profile.AvatarImage = image
+            user_profile.description = description
+
+            user_profile.save()
+        redirect('setting')
+    return render(request,'setting.html',{'user_profile':user_profile})
+
+@login_required(login_url='signin')
+def upload(request):
+    if(request.method == 'POST'):
+       user =   request.user
+       image =  request.FILES.get('image_upload')
+       caption = request.POST['caption']
+
+       new_post = Posts.objects.create(user=user, image=image, Content=caption)
+       new_post.save()
+       return redirect('/')
+    else:
+        return redirect('/')

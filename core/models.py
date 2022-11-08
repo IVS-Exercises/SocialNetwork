@@ -32,10 +32,11 @@ class Follows(models.Model):
     user= models.ForeignKey(User, related_name='Follows', on_delete=models.CASCADE)
 
 class Posts(models.Model):
-    Title = models.CharField(max_length=300,blank=False)
-    Content =  models.TextField(blank=False)
+    Title = models.CharField(max_length=300,blank=True)
+    Content =  models.TextField(blank=True)
     image =models.ImageField(upload_to="postImg")
     user = models.ForeignKey(User, related_name='posts',on_delete=models.CASCADE)
+    no_of_likes= models.IntegerField(default=0)
     def __str__(self):
         return self.user.username
 
