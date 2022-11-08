@@ -2,7 +2,7 @@ from asyncio.windows_events import NULL
 from cProfile import Profile
 from decimal import InvalidOperation
 from email import message
-from django.contrib.auth.models import User, auth
+from django.contrib.auth.models import User, auth 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
@@ -11,11 +11,13 @@ from django.db import models
 from django.http import HttpResponse
 import os
 
-from core.models import Profiles
+from core.models import Posts, Profiles
 
 @login_required(login_url='signin')
 def index(request):
-    return render(request, 'index.html')
+    user_object= User.objects.get(username=request.user.username)
+    user_profile = Profiles.objects.get(user=user_object)
+    return render(request,'index.html',{'user_profile':user_profile})
 
 
 def signup(request):
@@ -97,3 +99,16 @@ def setting(request):
             user_profile.save()
         redirect('setting')
     return render(request,'setting.html',{'user_profile':user_profile})
+
+@login_required(login_url='signin')
+def upload(request):
+    if(request.method == 'POST'):
+       user =   request.user
+       image =  request.FILES.get('image_upload')
+       caption = request.POST['caption']
+
+       new_post = Posts.objects.create(user=user, image=image, Content=caption)
+       new_post.save()
+       return redirect('/')
+    else:
+        return redirect('/')
