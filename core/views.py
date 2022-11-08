@@ -67,12 +67,18 @@ def signin(request):
             messages.info(request, 'user or passworld not found')
             return redirect('signin')
     return render(request, 'signin.html')
+<<<<<<< HEAD
 
 def logout(request):
     auth.logout(request)
     return redirect('signin')
 
 @login_required(login_url='signin')
+=======
+def logout(request):
+    auth.logout(request)
+    return redirect('signin')
+>>>>>>> origin/developer
 def setting(request):
     print("into setting")
     user_profile = Profiles.objects.get(user=request.user)
