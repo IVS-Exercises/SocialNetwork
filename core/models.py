@@ -27,6 +27,7 @@ class Profiles(models.Model):
         )
     def __str__(self):
         return self.user.username
+        
 class Follows(models.Model):
     profile= models.ForeignKey(Profiles,related_name='Follows', on_delete=models.CASCADE)
     user= models.ForeignKey(User, related_name='Follows', on_delete=models.CASCADE)
