@@ -1,17 +1,19 @@
+import os
 from asyncio.windows_events import NULL
 from cProfile import Profile
 from decimal import InvalidOperation
 from email import message
-from django.contrib.auth.models import User, auth 
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.shortcuts import render, redirect
 from itertools import chain
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User, auth
 from django.db import models
 from django.http import HttpResponse
-import os
+from django.shortcuts import redirect, render
 
-from core.models import Posts, Profiles
+from core.models import Likes, Posts, Profiles
+
 
 @login_required(login_url='signin')
 def index(request):
@@ -117,4 +119,50 @@ def upload(request):
 
 @login_required(login_url='signin')
 def like_post(request):
-    pass
+    user = request.user
+    post_id = request.GET.get('post_id')
+
+    post =  Posts.objects.get(id=post_id)
+    like_filter = Likes.objects.filter(posts=post, user=user).first()
+    if like_filter == None:
+        new_like = Likes.objects.create(posts=post, user=user)
+        new_like.save()
+        post.no_of_likes = post.no_of_likes+1
+        post.save()
+        return redirect('/')
+    else:
+        like_filter.delete()
+        post.no_of_likes = post.no_of_likes-1
+        post.save()
+        return redirect('/')
+
+@login_required(login_url='signin')      
+def delete(request):
+    user = request.user
+    post_id = request.GET.get('post_id')
+
+    post =  Posts.objects.get(id=post_id)
+
+    print(f"{user.id}, {post.user.id}")
+
+    if user.id == post.user.id:
+        post.delete()
+        return redirect('/')
+    else:
+        redirect('/')
+
+@login_required(login_url='signin')
+def profile(request, pk):
+    user_object = User.objects.get(username=pk)
+    user_profile = Profiles.objects.get(user=user_object)
+    user_posts = Posts.objects.filter(user=user_object)
+    user_post_length = len(user_posts)
+
+    context = {
+        'user_object': user_object,
+        'user_profile': user_profile,
+        'user_posts': user_posts,
+        'user_post_length': user_post_length,
+    }
+
+    return render(request, 'profile.html', context)
