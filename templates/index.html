@@ -15,6 +15,52 @@
     <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
+    <style>
+                @import url('https://fonts.googleapis.com/css?family=Quicksand&display=swap');
+        *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        }
+        b{
+            font-family:Quicksand;
+            color:blue;
+        }
+        .alert{
+        width:50%;
+        margin:20px auto;
+        padding:30px;
+        position:relative;
+        border-radius:5px;
+        box-shadow:0 0 15px 5px #ccc;
+        }
+        .close{
+        position:absolute;
+        width:30px;
+        height:30px;
+        opacity:0.5;
+        border-width:1px;
+        border-style:solid;
+        border-radius:50%;
+        right:15px;
+        top:25px;
+        text-align:center;
+        font-size:1.6em;
+        cursor:pointer;
+        }
+        @mixin alert($name,$bgColor){
+        $accentColor:darken($bgColor,50);
+        .#{$name}{
+            background-color:#{$bgColor};
+            border-left:5px solid $accentColor;
+            .close{
+            border-color:$accentColor;
+            color:$accentColor;
+            }
+        }
+        }
+        @include alert(warning-alert,#ffd48a);
+    </style>
 </head>
 
 <body>
@@ -123,7 +169,7 @@
                 </div>
             </div>
         </header>
-
+            
             <div class="container m-auto">
 
                 <!--<h1 class="lg:text-2xl text-lg font-extrabold leading-none text-gray-900 tracking-tight mb-5"> Feed </h1>--->
@@ -132,7 +178,12 @@
 
                     <!-- left sidebar-->
                     <div class="space-y-5 flex-shrink-0 lg:w-7/12">
-
+                        {% for message in messages %}
+                        <div class="alert warning-alert">
+                            <b>{{message}}</b>
+                            <a class="close">&times;</a>
+                          </div>
+                        {% endfor%}
                         <!-- post 1-->
                         {% for post in posts reversed %}
                         <div class="bg-white shadow rounded-md  -mx-2 lg:mx-0">
@@ -286,6 +337,14 @@
 
 
     <script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script>
+    <script>
+        $(".close").click(function() {
+            $(this)
+              .parent(".alert")
+              .fadeOut();
+          });
+          
+    </script>
 </body>
 
 

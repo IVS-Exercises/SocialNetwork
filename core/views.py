@@ -110,7 +110,9 @@ def upload(request):
        user =   request.user
        image =  request.FILES.get('image_upload')
        caption = request.POST['caption']
-
+       if image is None:
+            messages.info(request, 'you need a image to upload')
+            return redirect('/')
        new_post = Posts.objects.create(user=user, image=image, Content=caption)
        new_post.save()
        return redirect('/')
