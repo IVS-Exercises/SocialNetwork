@@ -12,7 +12,7 @@ from django.db import models
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 
-from core.models import Likes, Posts, Profiles
+from core.models import Likes, Posts, Profiles, Follows
 
 
 @login_required(login_url='signin')
@@ -159,12 +159,48 @@ def profile(request, pk):
     user_profile = Profiles.objects.get(user=user_object)
     user_posts = Posts.objects.filter(user=user_object)
     user_post_length = len(user_posts)
+    user_followers =  len(Follows.objects.filter(profile=user_profile))
+    user_following = len(Follows.objects.filter(user=user_object))
 
+    user =  request.user
+    check_followers = Follows.objects.filter(user=user,profile=user_profile).first()
+    if check_followers is None:
+        status = 'follow'
+    else:
+        status =  'Unfollow'
+
+    print("status : "+status)
     context = {
         'user_object': user_object,
         'user_profile': user_profile,
         'user_posts': user_posts,
         'user_post_length': user_post_length,
+        'status': status,
+        'user_followers': user_followers,
+        'user_following': user_following
     }
 
     return render(request, 'profile.html', context)
+
+@login_required(login_url='signin')
+def follow(request):
+    if request.method == 'POST':
+        user_id =  request.POST['user_id']
+        profile_id = request.POST['profile_id']
+        username =  request.POST['username']
+
+        profile =  Profiles.objects.get(id=profile_id)
+        user = User.objects.get(id=user_id)
+        print(user_id is None)
+        print(profile_id is None)
+        object_follower = Follows.objects.filter(profile=profile_id,user=user_id).first()
+        if object_follower != None:
+            delete_record =  Follows.objects.get(profile=profile_id,user=user_id)
+            delete_record.delete()
+            return redirect('/profile/'+username)
+        else:
+            new_follower = Follows.objects.create(profile=profile,user=user)
+            new_follower.save()
+            return redirect('/profile/'+username)
+    else:
+        return redirect('/')
