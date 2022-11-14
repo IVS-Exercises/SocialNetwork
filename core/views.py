@@ -19,7 +19,6 @@ from core.models import Likes, Posts, Profiles, Follows
 def index(request):
     user_object= User.objects.get(username=request.user.username)
     user_profile = Profiles.objects.get(user=user_object)
-
     posts =Posts.objects.all()
     return render(request,'index.html',{'user_profile':user_profile ,'posts':posts})
 
@@ -101,7 +100,7 @@ def setting(request):
             user_profile.description = description
 
             user_profile.save()
-        redirect('setting')
+        redirect('/')
     return render(request,'setting.html',{'user_profile':user_profile})
 
 @login_required(login_url='signin')

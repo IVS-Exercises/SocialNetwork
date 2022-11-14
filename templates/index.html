@@ -70,7 +70,7 @@
                     <!-- Logo -->
                     <div id="logo" class=" uk-hidden@s">
                         <a href="home.html">
-                            <b><h1 style="text-transform: uppercase;">Social Book</h1></b>
+                            <b><h1 style="text-transform: uppercase;">Social NetWork</h1></b>
                         </a>
                     </div>
 
@@ -101,7 +101,7 @@
 
                         <!-- notivication header -->
                         <div class="px-4 py-3 -mx-5 -mt-4 mb-5 border-b">
-                            <h4>Upload Pics</h4>
+                            <h4>New Post</h4>
                         </div>
 
                         <!-- notification contents -->
@@ -238,10 +238,8 @@
                                             </svg>
                                             {% if post.no_of_likes == 0 %}
                                             <p>No likes</p>
-                                            {% elif post.no_of_likes == 1 %}
-                                            <p>Liked by {{post.no_of_likes}} person</p>
                                             {% else %}
-                                            <p>Liked by {{post.no_of_likes}} people</p>
+                                            <p>{{post.no_of_likes}} Like</p>
                                             {% endif %}
                                         </div>
                                         
