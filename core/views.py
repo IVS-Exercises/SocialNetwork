@@ -4,6 +4,7 @@ from cProfile import Profile
 from decimal import InvalidOperation
 from email import message
 from itertools import chain
+from django.core.exceptions import ObjectDoesNotExist
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -12,13 +13,16 @@ from django.db import models
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 
-from core.models import Likes, Posts, Profiles, Follows
+from core.models import Follows, Likes, Posts, Profiles
 
 
 @login_required(login_url='signin')
 def index(request):
     user_object= User.objects.get(username=request.user.username)
-    user_profile = Profiles.objects.get(user=user_object)
+    try:
+        user_profile = Profiles.objects.get(user=user_object)
+    except ObjectDoesNotExist:
+        return render(request, 'signin.html')
 
     user_following_list = []
     feed = []
@@ -27,11 +31,11 @@ def index(request):
 
     for users in user_following:
         user_following_list.append(users.profile)
-
     for profile in user_following_list:
         feed_lists = Posts.objects.filter(user=profile.user)
         feed.append(feed_lists)
-
+    post_user =Posts.objects.filter(user=user_object)
+    feed.append(post_user)
     feed_list = list(chain(*feed))
 
     return render(request,'index.html',{'user_profile':user_profile ,
