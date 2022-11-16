@@ -19,8 +19,24 @@ from core.models import Likes, Posts, Profiles, Follows
 def index(request):
     user_object= User.objects.get(username=request.user.username)
     user_profile = Profiles.objects.get(user=user_object)
-    posts =Posts.objects.all()
-    return render(request,'index.html',{'user_profile':user_profile ,'posts':posts})
+
+    user_following_list = []
+    feed = []
+
+    user_following = Follows.objects.filter(user=request.user)
+
+    for users in user_following:
+        user_following_list.append(users.profile)
+
+    for profile in user_following_list:
+        feed_lists = Posts.objects.filter(user=profile.user)
+        feed.append(feed_lists)
+
+    feed_list = list(chain(*feed))
+
+    return render(request,'index.html',{'user_profile':user_profile ,
+    'posts':feed_list,'all_profiles':Profiles.objects.all()})
+
 
 
 def signup(request):
